@@ -1,5 +1,5 @@
 import express, {Request,Response} from 'express';
-const app = express();
+export let app = express();
 
 app.listen('3000',() => {
     console.log('welcome to the dev-ops world')
