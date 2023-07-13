@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+IMAGE="hello-ops-girl:dev"
+
+docker build -t "${IMAGE}" .
+docker run --rm -w /app "${IMAGE}" "${@}"
