@@ -1,3 +1,5 @@
+LICENSE
+auto
+.idea
 node_modules
-package-lock.json
 coverage
