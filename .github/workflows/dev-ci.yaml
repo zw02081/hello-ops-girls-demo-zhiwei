@@ -1,0 +1,68 @@
+name: hello ops girls dev pipeline
+run-name: dev-ci
+on:
+  push:
+    branches:
+      - '*'
+      - '!main'
+
+env:
+  AWS_ACCOUNT: "494526681395"
+  AWS_REGION: "ap-southeast-1"
+
+permissions:
+  id-token: write
+  contents: read
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: "arn:aws:iam::${{env.AWS_ACCOUNT}}:role/GitHubAction-AssumeRoleWithActionForDevopsGirls2023"
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build and push dev image to ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: devopsgirl2023/hello-ops-girl
+          IMAGE_TAG: ${{ github.run_id }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+  test:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: "arn:aws:iam::${{env.AWS_ACCOUNT}}:role/GitHubAction-AssumeRoleWithActionForDevopsGirls2023"
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Unit test
+        run: auto/test
+  lint:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: "arn:aws:iam::${{env.AWS_ACCOUNT}}:role/GitHubAction-AssumeRoleWithActionForDevopsGirls2023"
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: lint
+        run: auto/lint
