@@ -8,6 +8,4 @@ RUN yarn install
 
 COPY . /app/
 
-ENTRYPOINT ["yarn"]
-
-CMD "start"
+CMD ["yarn", "start"]
