@@ -20,17 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: "arn:aws:iam::${{env.AWS_ACCOUNT}}:role/GitHubAction-AssumeRoleWithActionForDevopsGirls2023"
-          aws-region: ${{ env.AWS_REGION }}
-      - name: Login to AWS ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - id: aws-auth
+        uses: "./.github/actions/aws-auth"
       - name: Build and push dev image to ECR
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REGISTRY: ${{ steps.aws-auth.outputs.registry }}
           REPOSITORY: devopsgirl2023/hello-ops-girl
           IMAGE_TAG: ${{ github.run_id }}
         run: |
@@ -41,14 +35,7 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: "arn:aws:iam::${{env.AWS_ACCOUNT}}:role/GitHubAction-AssumeRoleWithActionForDevopsGirls2023"
-          aws-region: ${{ env.AWS_REGION }}
-      - name: Login to AWS ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - uses: "./.github/actions/aws-auth"
       - name: Unit test
         run: auto/test
   lint:
@@ -56,13 +43,6 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v3
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: "arn:aws:iam::${{env.AWS_ACCOUNT}}:role/GitHubAction-AssumeRoleWithActionForDevopsGirls2023"
-          aws-region: ${{ env.AWS_REGION }}
-      - name: Login to AWS ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      - uses: "./.github/actions/aws-auth"
       - name: lint
         run: auto/lint
