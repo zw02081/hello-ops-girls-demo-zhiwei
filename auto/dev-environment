@@ -6,7 +6,7 @@ if [ "${GITHUB_SHA:-}" ]; then
   IMAGE="494526681395.dkr.ecr.ap-southeast-1.amazonaws.com/devopsgirl2023/hello-ops-girl:${GITHUB_SHA}"
 else
   IMAGE="hello-ops-girl:dev"
+  docker build -t "${IMAGE}" .
 fi
 
-docker build -t "${IMAGE}" .
 docker run --rm -w /app "${IMAGE}" "${@}"
