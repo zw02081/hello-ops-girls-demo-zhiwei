@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - '*'
-      - '!main'
 
 env:
   AWS_ACCOUNT: "494526681395"
@@ -26,7 +25,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.aws-auth.outputs.registry }}
           REPOSITORY: devopsgirl2023/hello-ops-girl
-          IMAGE_TAG: ${{ github.run_id }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
