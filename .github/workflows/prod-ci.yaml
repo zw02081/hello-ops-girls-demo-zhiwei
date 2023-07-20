@@ -1,0 +1,33 @@
+name: hello ops girls prod pipeline
+run-name: prod-ci
+on:
+  workflow_run:
+    workflows: ["hello ops girls dev pipeline"]
+    branches: [main]
+    types:
+      - completed
+
+env:
+  AWS_ACCOUNT: "494526681395"
+  AWS_REGION: "ap-southeast-1"
+
+permissions:
+  id-token: write
+  contents: read
+
+
+jobs:
+  release-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: aws-auth
+        uses: "./.github/actions/aws-auth"
+      - name: tag and push prod image to ECR
+        env:
+          REGISTRY: ${{ steps.aws-auth.outputs.registry }}
+          REPOSITORY: devopsgirl2023/hello-ops-girl
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:latest

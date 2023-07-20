@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ "${GITHUB_RUN_ID:-}" ]; then
+  IMAGE="494526681395.dkr.ecr.ap-southeast-1.amazonaws.com/devopsgirl2023/hello-ops-girl:${GITHUB_RUN_ID}"
+else
+  IMAGE="hello-ops-girl:dev"
+fi
+
+docker build -t "${IMAGE}" .
+docker run --rm -w /app "${IMAGE}" "${@}"
