@@ -46,4 +46,8 @@ module.exports = {
 
   // The regexp pattern or array of patterns that Jest uses to detect tests files
   testRegex: "/tests/.*.test.ts$",
+
+  "moduleNameMapper": {
+    "^@engine/(.*)": "<rootDir>/src/engine/$1"
+  },
 };
