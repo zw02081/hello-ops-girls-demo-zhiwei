@@ -6,6 +6,8 @@ COPY yarn.lock package.json /app/
 
 RUN yarn install
 
+RUN npx tsc
+
 COPY . /app/
 
 CMD ["yarn", "start"]
