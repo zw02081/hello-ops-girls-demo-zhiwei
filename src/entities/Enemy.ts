@@ -12,10 +12,10 @@ import { Entity, EntityID } from "./Entity.js";
  * an EnemyFactory.
  */
 export class Enemy extends Entity {
-	
+
 	// The image of the enemy.
 	private img: Sprite;
-	
+
 	/**
 	 * @param x the starting x coordinate of the instance.
 	 * @param y the starting y coordinate of the instnace.
@@ -25,20 +25,21 @@ export class Enemy extends Entity {
 	 */
 	constructor(x: number, y: number, width: number, height: number, img: Sprite) {
 		super(x, y, width, height, EntityID.Enemy);
-		
+
 		this.img = img;
 	}
-	
+
 	public update(): void {
 		this.bounds.pos.add(this.direction);
 	}
-	
+
 	public render(gfx: Graphics): void {
 		gfx.drawImageInBounds(this.img, this.bounds);
 	}
-	
-	public hit(e: Entity): void {}
-	
+
+
+	public hit(e: Entity): void {} // eslint-disable-line @typescript-eslint/no-unused-vars
+
 }
 
 /**
@@ -56,33 +57,33 @@ export enum EnemyType {
  * us to have a randomly generated instances.
  */
 export class EnemyFactory {
-	
+
 	// The images for each of the enemies.
 	private shortImage: Sprite;
 	private tallImage: Sprite;
 	private flyingImage: Sprite;
-	
+
 	// The information about the world for generation.
 	private screenSize: Dimension;
 	private worldInfo: WorldInfo;
-	
+
 	/**
 	 * @param worldInfo the information about the world.
 	 */
 	constructor(worldInfo: WorldInfo) {
 		const sm = SpriteManager.instance;
-		
+
 		this.shortImage = sm.get("shortEnemy");
 		this.tallImage = sm.get("tallEnemy");
 		this.flyingImage = sm.get("flyingEnemy");
-		
+
 		this.screenSize = GameScreen.size();
 		this.worldInfo = worldInfo;
 	}
-	
+
 	/**
 	 * Generate an instance of an enemy on demand.
-	 * 
+	 *
 	 * @param speed the speed the enemy will move at.
 	 * The speed is for the x axis and will be how fast
 	 * the enemy should move to the left.
@@ -93,7 +94,7 @@ export class EnemyFactory {
 		let width: number;
 		let height: number;
 		let image: Sprite;
-		
+
 		// DON'T FORGET THE BREAK STATEMENTS.
 		// Specific properties for each enemy type. This is why we have
 		// a factory to generate the instances.
@@ -114,23 +115,23 @@ export class EnemyFactory {
 			image = this.flyingImage;
 			break;
 		}
-		
+
 		const dir = new Vector2D(-speed, 0);
 		const x = this.screenSize.width;
 		let y = this.screenSize.height - this.worldInfo.groundHeight - height;
-		
+
 		if (type === EnemyType.Flying)
 			y -= (Math.random() * 120 + 70);
-		
+
 		const e = new Enemy(x, y, width, height, image);
 		e.setDirection(dir);
 		return e
 	}
-	
+
 	/**
 	 * Generates a random enemy based on some random probability
 	 * that was chosen arbitrarily.
-	 * 
+	 *
 	 * @param speed the speed the enemy will move at.
 	 * The speed is for the x axis and will be how fast
 	 * the enemy should move to the left.
@@ -138,7 +139,7 @@ export class EnemyFactory {
 	 */
 	public generateRandom(speed: number): Enemy {
 		const rand = Math.random() * 300;
-		
+
 		if (0 <= rand && rand < 125)
 			return this.generate(speed, EnemyType.Tall);
 		if (125 <= rand && rand < 250)
@@ -146,5 +147,5 @@ export class EnemyFactory {
 		else
 			return this.generate(speed, EnemyType.Flying);
 	}
-	
+
 }

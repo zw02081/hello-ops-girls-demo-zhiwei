@@ -42,6 +42,6 @@ export class Ground extends Entity {
 		gfx.fill(this.upperBounds, this.upperColor);
 	}
 
-	public hit(e: Entity): void { }
+	public hit(e: Entity): void { } // eslint-disable-line @typescript-eslint/no-unused-vars
 
 }

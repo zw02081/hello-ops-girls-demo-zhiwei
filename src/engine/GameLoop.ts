@@ -98,13 +98,11 @@ export class GameLoop {
 		looper.lastTime = looper.nowTime;
 
 		while (looper.deltaTime >= 1) {
-			// @ts-ignore
 			looper.update();
 			looper.ups++;
 			looper.deltaTime--;
 		}
 
-		// @ts-ignore
 		looper.render();
 		looper.fps++;
 

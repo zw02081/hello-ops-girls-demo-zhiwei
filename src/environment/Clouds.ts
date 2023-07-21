@@ -50,7 +50,7 @@ export class Clouds extends Entity {
 		}
 	}
 
-	public hit(e: Entity): void {}
+	public hit(e: Entity): void {} // eslint-disable-line @typescript-eslint/no-unused-vars
 
 	public setRelativeSpeedX(speed: number): void {
 		this.direction.x = -speed * this.tween;
