@@ -3,6 +3,9 @@
 
 This is a recreation of Google's Dino Game, the one that you can play when you don't have an internet connection. This game was made using TypeScript and Node.js.
 
+## Playing the Game
+You can run the game going to the [GitHub page](https://devopsgirl2023.github.io/hello-ops-girls/).<br/>
+
 ## Local Running
 ### Prerequisites
 You'll need:
