@@ -20,11 +20,11 @@ import { HUD } from "./HUD.js";
  * but in this game they should stay constant.
  */
 export class WorldInfo {
-	
+
 	public readonly groundHeight: number;
 	public readonly gravity: Vector2D;
 	public readonly spawnPoint: Vector2D;
-	
+
 }
 
 /**
@@ -32,62 +32,62 @@ export class WorldInfo {
  * the entities in our world.
  */
 export class World implements Loopable {
-	
+
 	private info: WorldInfo;
 	private screenSize: Dimension;
-	
+
 	private ground: Ground;
 	private player: Player;
 	private clouds: Clouds;
-	
+
 	private enemyFactory: EnemyFactory;
-	
+
 	private handler: Handler<Entity>;
-	
+
 	private score: Counter;
 	private difficulty: Counter;
 	private hud: HUD;
-	
+
 	private timer: Counter;
-	
+
 	private gameOver: GameOver;
-	
+
 	constructor() {
 		this.screenSize = GameScreen.size();
-		
+
 		this.info = {
 			groundHeight: 100,
 			gravity: new Vector2D(0, 0.68),
-			spawnPoint: new Vector2D(25, this.screenSize.height - 64 * 3)
+			spawnPoint: new Vector2D(25, this.screenSize.height - 50 * 3)
 		};
-		
+
 		/* Initialize the main entities for the game. */
 		this.ground = new Ground(this.info.groundHeight, this.screenSize);
 		this.player = new Player(this.info);
 		this.clouds = new Clouds(0.1);
-		
+
 		/* Create an enemy factory to generate random enemies. */
 		this.enemyFactory = new EnemyFactory(this.info);
-		
+
 		/* Initialize the entity handler for the entire game. */
 		this.handler = new Handler<Entity>();
-		
+
 		/* Initialize the counters for the game. */
 		this.score = new Counter(0);
 		this.difficulty = new Counter(1);
 		/* Initialize the heads up display. */
 		this.hud = new HUD(this.score, this.difficulty);
-		
+
 		/* Timer to count how long we have been playing. */
 		this.timer = new Counter(0);
-		
+
 		/* Initialize the game over screen. */
 		this.gameOver = new GameOver();
-		
+
 		/* Reset the world so that we can start playing. */
 		this.reset();
 	}
-	
+
 	public update(): void {
 		/* The update method of the world is seperated into the following stages:
 		 * 1. Check if the player collided with anything.
@@ -104,35 +104,35 @@ export class World implements Loopable {
 		 * 3. If the player is alive, we can update everything in our game.
 		 */
 		this.checkPlayerCollision();
-		
+
 		if (this.player.isMoving()) {
 			this.score.inc();
 			if (this.score.value % 500 == 0)
 				this.nextLevel();
-			
+
 			this.hud.update();
-			
+
 			this.timer.inc();
 			if (this.timer.value % 100 == 0)
 				this.generateRandEnemy();
-			
+
 			this.clouds.update();
 		}
-		
+
 		if (this.player.isAlive())
 			this.handler.update();
 	}
-	
+
 	public render(gfx: Graphics): void {
 		gfx.fillBackground(Color.LightBlue);
 		this.handler.render(gfx);
-		
+
 		this.clouds.render(gfx);
-		
+
 		if (!this.player.isAlive())
 			this.gameOver.render(gfx);
 	}
-	
+
 	/**
 	 * Iterates over all intances in this.handler and checks if the player
 	 * hit any one of them (except for the player itself).
@@ -146,20 +146,20 @@ export class World implements Loopable {
 					this.player.hit(e);
 		}
 	}
-	
+
 	/**
 	 * Comlex calculation to get the current speed the world is moving.
 	 * Here the speed is a scalar and not a vector is the world's
 	 * movement is only in one direction. Technically it is a 1
 	 * dimensional vector, but we can just treat it as a scalar for our
 	 * purposes.
-	 * 
+	 *
 	 * @returns the speed the world is currently moving at.
 	 */
 	private generateSpeed(): number {
 		return this.difficulty.value * 5;
 	}
-	
+
 	/**
 	 * Handles going to the next level in the world.
 	 */
@@ -167,7 +167,7 @@ export class World implements Loopable {
 		this.difficulty.inc();
 		this.clouds.setRelativeSpeedX(this.generateSpeed());
 	}
-	
+
 	/**
 	 * Generates a random enemy and adds it to the game.
 	 */
@@ -175,7 +175,7 @@ export class World implements Loopable {
 		const speed = this.generateSpeed();
 		this.handler.add(this.enemyFactory.generateRandom(speed));
 	}
-	
+
 	/**
 	 * Resets the world. Resets all parameters that are needed to
 	 * start a fresh new game.
@@ -185,12 +185,12 @@ export class World implements Loopable {
 		this.score.value = 0;
 		this.timer.value = 0;
 		this.player.reset();
-		
+
 		this.handler.clear();
 		this.handler.add(this.ground);
 		this.handler.add(this.player);
-		
+
 		this.clouds.setRelativeSpeedX(this.generateSpeed());
 	}
-	
+
 }
