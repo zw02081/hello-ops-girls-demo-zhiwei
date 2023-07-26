@@ -66,5 +66,29 @@ jobs:
 ```
 
 ## WorkShop Part2 - 应用AWS搭建网站
+### step1: 手动创建 ec2 instance
+### step2: 更新 ec2 的 iam role
+### step3: 登陆 ec2
+`ssh -i <pem> ec2-user@<public-ip>`
+### step4: 安装 docker
+```
+1. sudo yum update -y
+2. sudo amazon-linux-extras install docker -y
+3. sudo usermod -aG docker ec2-user
+4. sudo systemctl start docker
+5. sudo systemctl enable docker
+6. docker info
+7. re-connect ec2
+8. docker info
+```
+### step5: 登陆 ECR
+`aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com"`
+### step6: 拉取 docker image
+`aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com"`
+### step7: 启动 docker
+`docker run --name hello-ops-girl-app -d -p 8000:8000 {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest`
+### step8: 安装 nginx
+### step9: 启动 nginx
+### step10: 更新 nginx 配置文件
 
 ## WorkShop Part3 - 实践基础设施即代码
