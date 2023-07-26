@@ -71,7 +71,10 @@ jobs:
 
 ## WorkShop Part2 - 应用AWS搭建网站
 ### step1: 手动创建 ec2 instance
+都是默认的 选择linux 2 ami(hvm)
+注意 security group （安全组）的选择
 ### step2: 更新 ec2 的 iam role
+选择 devops girl 的 iam role
 ### step3: 登陆 ec2
 `ssh -i <pem> ec2-user@<public-ip>`
 ### step4: 安装 docker
@@ -88,11 +91,29 @@ jobs:
 ### step5: 登陆 ECR
 `aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com"`
 ### step6: 拉取 docker image
-`aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com"`
+`docker pull {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest`
 ### step7: 启动 docker
 `docker run --name hello-ops-girl-app -d -p 8000:8000 {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest`
 ### step8: 安装 nginx
+`amazon-linux-extras install nginx1 -y `
 ### step9: 启动 nginx
-### step10: 更新 nginx 配置文件
+```
+systemctl enable nginx
+systemctl start nginx
+```
+### step10: 访问网站
+由于此时还没有配置完成反向代理，那么这个时候只能看到 nginx 界面
+### step11: 更新 nginx 配置文件
+```
+sudo vi /etc/nginx/nginx.conf
+
+in http.server add
+
+
+location / {
+            proxy_pass http://localhost:8000/public/;
+        }
+```
+### step12: 再次访问网站
 
 ## WorkShop Part3 - 实践基础设施即代码
