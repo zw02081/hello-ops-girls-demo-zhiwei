@@ -1,0 +1,9 @@
+---
+
+- name: Template a file to /etc/file.conf
+  ansible.builtin.template:
+    src: ops-girls.conf.j2
+    dest: /etc/nginx/conf.d/ops-girls.conf
+    mode: '0644'
+  notify:
+    - restart nginx

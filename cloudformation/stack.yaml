@@ -1,0 +1,70 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Template for DevOps Girls Workshop 2023
+Parameters:
+  SecurityGroupName:
+    Description: EC2 Security Group Name
+    Type: String
+  KeyName:
+    Description: EC2 KeyPair Name
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: must be the name of an existing EC2 KeyPair
+    Default: devops-girls-2023
+  HostedZoneId:
+    Description: Route 53 Hosted Zone Id
+    Type: String
+  DomainName:
+    Description: Route 53 Fully Qualified Domain Name
+    Type: String
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-06b79cf2aee0d5c92
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      SecurityGroups:
+        - !Ref SecurityGroupName
+      IamInstanceProfile: !Ref InstanceProfile
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          yum update -y
+          amazon-linux-extras install nginx1 -y
+          systemctl enable --now nginx
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub ${AWS::StackName}-profile
+      Path: /
+      Roles:
+        - EC2-AssumeRoleWithEC2ForDevopsGirls2023
+  EIP:
+    Type: AWS::EC2::EIP
+  EIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      EIP: !Ref EIP
+      InstanceId: !Ref Instance
+  Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      TTL: "60"
+      ResourceRecords:
+        - !Ref EIP
+Outputs:
+  InstanceId:
+    Description: EC2 Instance Id
+    Value: !Ref Instance
+  PublicIP:
+    Description: EC2 Instance Public IP Address
+    Value: !Ref EIP
+  PrivateIP:
+    Description: EC2 Instance Private IP Address
+    Value: !GetAtt Instance.PrivateIp
+  DomainName:
+    Description: Fully Qualified Domain Name
+    Value: !Ref DomainName

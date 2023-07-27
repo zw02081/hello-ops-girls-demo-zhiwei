@@ -1,0 +1,41 @@
+---
+
+- name: Upgrade all packages
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+
+- name: install docker
+  shell:
+    cmd: "amazon-linux-extras install docker -y"
+  notify:
+    - daemon reload
+
+- name: allow ec2-user to use docker
+  user:
+    name: 'ec2-user'
+    groups: docker
+    append: yes
+
+- name: enable docker service
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: login to ecr
+  shell:
+    cmd: "aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com"
+
+- name: pull latest image
+  shell:
+    cmd: "docker pull {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest"
+
+- name: stop old app
+  shell:
+    cmd: "docker stop hello-ops-girl-app && docker rm hello-ops-girl-app"
+  ignore_errors: true
+
+- name: start new app
+  shell:
+    cmd: "docker run --name hello-ops-girl-app -d -p 8000:8000 {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest"

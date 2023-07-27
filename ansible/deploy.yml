@@ -1,0 +1,6 @@
+---
+
+- hosts: web
+  roles:
+    - { role: nginx, become: yes }
+    - { role: app, become: yes }
