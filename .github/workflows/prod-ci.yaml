@@ -54,7 +54,7 @@ jobs:
           sed -i "s/AWS_ACCOUNT/${AWS_ACCOUNT}/" roles/app/vars/main.yml
           sed -i "s/DOMAIN_NAME/${DOMAIN_NAME}/" roles/nginx/vars/main.yml
 
-          ip=$(aws cloudformation describe-stacks --stack-name hello-ops-girls --query 'Stacks[0].Outputs[?OutputKey == `PublicIP`].OutputValue' --output text)
+          ip=$(aws cloudformation describe-stacks --stack-name ${STACK_NAME} --query 'Stacks[0].Outputs[?OutputKey == `PublicIP`].OutputValue' --output text)
           echo "${ip}" >> hosts.ini
 
           echo "${SSH_KEY}" | base64 -d > devops-girls-2023.pem
