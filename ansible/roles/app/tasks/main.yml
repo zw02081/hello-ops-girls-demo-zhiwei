@@ -29,7 +29,7 @@
 
 - name: pull latest image
   shell:
-    cmd: "docker pull {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest"
+    cmd: "docker pull {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:{{ image_tag }}"
 
 - name: stop old app
   shell:
@@ -38,4 +38,4 @@
 
 - name: start new app
   shell:
-    cmd: "docker run --name hello-ops-girl-app -d -p 8000:8000 {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest"
+    cmd: "docker run --name hello-ops-girl-app -d -p 8000:8000 {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:{{ image_tag }}"
