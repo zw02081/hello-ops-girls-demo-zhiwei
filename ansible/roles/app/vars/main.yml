@@ -3,3 +3,4 @@
 aws_account: AWS_ACCOUNT
 aws_region: ap-southeast-1
 ecr_repo: hello-ops-girl
+image_tag: IMAGE_TAG
