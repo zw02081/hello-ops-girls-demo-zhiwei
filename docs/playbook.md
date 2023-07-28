@@ -77,16 +77,16 @@ jobs:
 ### step3: 登陆 ec2
 `ssh -i <pem> ec2-user@<public-ip>`
 ### step4: 安装 docker
-```
-1. sudo yum update -y
-2. sudo amazon-linux-extras install docker -y
-3. sudo usermod -aG docker ec2-user
-4. sudo systemctl start docker
-5. sudo systemctl enable docker
-6. docker info
-7. re-connect ec2
-8. docker info
-```
+1. 升级 yum `sudo yum update -y`
+2. 安装docker `sudo amazon-linux-extras install docker -y`
+3. 加入用户组 `sudo usermod -aG docker ec2-user`
+4. 启动 docker `sudo systemctl start docker`
+5. 设置开机启动 `sudo systemctl enable docker`
+6. 查看 docker `docker info`
+7. 退出 `exit` 
+8.  重新连接 `ssh -i <pem> ec2-user@<public-ip>`
+8. 查看 docker `docker info`
+
 ### step5: 登陆 ECR
 `aws ecr get-login-password --region {{ aws_region }} | docker login --username AWS --password-stdin {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com"`
 ### step6: 拉取 docker image
@@ -103,17 +103,18 @@ sudo systemctl start nginx
 ### step10: 访问网站
 由于此时还没有配置完成反向代理，那么这个时候只能看到 nginx 界面
 ### step11: 更新 nginx 配置文件
-```
-sudo vi /etc/nginx/nginx.conf
-
-in http.server add
-
-
-location / {
+1. 使用 vi 来编辑 nginx 配置文件 `sudo vi /etc/nginx/nginx.conf`
+2. 按 `i` 进入编辑模式
+3. 在 http.server 中添加以下代码
+	`location / {
             proxy_pass http://localhost:8000;
-        }
-```
-### step12: 再次访问网站
+        }`
+4. 按 `esc` 退出编辑模式
+5. 按 `:wq` 保存
+
+### step12: restart nginx
+`sudo systemctl restart nginx`
+### step13: 再次访问网站
 
 ## WorkShop Part3 - 实践基础设施即代码
 
