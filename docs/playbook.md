@@ -95,11 +95,11 @@ jobs:
 ### step7: 启动 docker
 `docker run --name hello-ops-girl-app -d -p 8000:8000 {{ aws_account }}.dkr.ecr.{{ aws_region }}.amazonaws.com/devopsgirl2023/{{ ecr_repo }}:latest`
 ### step8: 安装 nginx
-`amazon-linux-extras install nginx1 -y `
+`sudo amazon-linux-extras install nginx1 -y `
 ### step9: 启动 nginx
 ```
-systemctl enable nginx
-systemctl start nginx
+sudo systemctl enable nginx
+sudo systemctl start nginx
 ```
 ### step10: 访问网站
 由于此时还没有配置完成反向代理，那么这个时候只能看到 nginx 界面
@@ -111,7 +111,7 @@ in http.server add
 
 
 location / {
-            proxy_pass http://localhost:8000/public/;
+            proxy_pass http://localhost:8000;
         }
 ```
 ### step12: 再次访问网站
