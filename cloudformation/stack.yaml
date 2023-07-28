@@ -20,11 +20,7 @@ Resources:
   Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-06b79cf2aee0d5c92
-      InstanceType: t2.micro
-      KeyName: !Ref KeyName
-      SecurityGroups:
-        - !Ref SecurityGroupName
+      # TODO: Add properties according to the playbook
       IamInstanceProfile: !Ref InstanceProfile
       UserData:
         Fn::Base64: |
@@ -46,25 +42,4 @@ Resources:
     Properties:
       EIP: !Ref EIP
       InstanceId: !Ref Instance
-  Record:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZoneId
-      Name: !Ref DomainName
-      Type: A
-      TTL: "60"
-      ResourceRecords:
-        - !Ref EIP
-Outputs:
-  InstanceId:
-    Description: EC2 Instance Id
-    Value: !Ref Instance
-  PublicIP:
-    Description: EC2 Instance Public IP Address
-    Value: !Ref EIP
-  PrivateIP:
-    Description: EC2 Instance Private IP Address
-    Value: !GetAtt Instance.PrivateIp
-  DomainName:
-    Description: Fully Qualified Domain Name
-    Value: !Ref DomainName
+  # TODO: Add RecordSet
