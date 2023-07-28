@@ -21,9 +21,8 @@ git clone git@github.com:devopsgirl2023/hello-ops-girls-demo-<Your name>.git
 
 ### Step 1: 创建Dockerfile
 ```dockerfile
-FROM node:19-slim@sha256:f58f1fcf5c9ff9e3752993edb4ed6dbd35697124c85a43f3b97aa054500b0534
+FROM node:19-slim
 WORKDIR /app
-RUN apt-get update && apt-get install python3 -y
 COPY yarn.lock package.json /app/
 RUN yarn install
 COPY . /app/
