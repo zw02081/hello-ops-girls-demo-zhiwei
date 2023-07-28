@@ -13,8 +13,6 @@ You'll need:
     * `apt-get install nodejs`
 * TypeScript
     * `node i -g typescript`
-* (Optional) Python3 to run an http server on your machine:
-    * `sudo apt-get install python3`
 
 To download the code you can clone the Git repo using:
 ```git
